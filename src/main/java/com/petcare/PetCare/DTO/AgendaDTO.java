@@ -12,6 +12,7 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 public class AgendaDTO {
+    private Long id;
     private Long tutorId;
     private Long animalId;
     private Long medicamentoId;
