@@ -1,5 +1,6 @@
 package com.petcare.PetCare.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public class Medicamento {
     private String viaAdministracao;
 
     @OneToMany(mappedBy = "medicamento", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Agenda> agendamentos;
 
 }

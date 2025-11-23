@@ -1,5 +1,6 @@
 package com.petcare.PetCare.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,5 +23,6 @@ public class Tutor {
 
 
     @OneToMany(mappedBy = "tutor", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Animal> animais;
 }

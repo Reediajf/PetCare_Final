@@ -1,5 +1,6 @@
 package com.petcare.PetCare.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +28,7 @@ public class Animal {
 
     @ManyToOne
     @JoinColumn(name = "tutor_id")
+    @JsonIgnore
     private Tutor tutor;
 
 

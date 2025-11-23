@@ -1,5 +1,6 @@
 package com.petcare.PetCare.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +30,7 @@ public class Agenda {
 
     @ManyToOne
     @JoinColumn(name = "medicamento_id")
+    @JsonIgnore
     private Medicamento medicamento;
 
 

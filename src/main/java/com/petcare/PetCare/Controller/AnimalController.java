@@ -24,6 +24,7 @@ public class AnimalController {
         Animal salvo = animalService.cadastrar(animal);
 
         AnimalDTO resposta = new AnimalDTO(
+                salvo.getId(),
                 salvo.getNome(),
                 salvo.getRaca(),
                 salvo.getPeso(),
@@ -43,6 +44,7 @@ public class AnimalController {
         Animal atualizado = animalService.atualizar(id, animalAtualizado);
 
         AnimalDTO resposta = new AnimalDTO(
+                atualizado.getId(),
                 atualizado.getNome(),
                 atualizado.getRaca(),
                 atualizado.getPeso(),
@@ -65,6 +67,7 @@ public class AnimalController {
         List<AnimalDTO> lista = animalService.listarAnimais()
                 .stream()
                 .map(animal -> new AnimalDTO(
+                        animal.getId(),
                         animal.getNome(),
                         animal.getRaca(),
                         animal.getPeso(),
@@ -84,6 +87,7 @@ public class AnimalController {
         Animal salvo = animalService.cadastrarParaUsuario(animal, usuarioId);
 
         AnimalDTO resposta = new AnimalDTO(
+                salvo.getId(),
                 salvo.getNome(),
                 salvo.getRaca(),
                 salvo.getPeso(),

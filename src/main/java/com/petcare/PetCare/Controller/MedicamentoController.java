@@ -27,7 +27,7 @@ public class MedicamentoController {
 
         Medicamento salvo = medicamentoService.cadastrar(medicamento);
 
-        MedicamentoDTO resposta = new MedicamentoDTO(salvo.getNome(), salvo.getDosagem(), salvo.getViaAdministracao());
+        MedicamentoDTO resposta = new MedicamentoDTO(salvo.getId(), salvo.getNome(), salvo.getDosagem(), salvo.getViaAdministracao());
         return ResponseEntity.ok(resposta);
     }
 
@@ -37,7 +37,7 @@ public class MedicamentoController {
         Medicamento medicamentoAtualizado = medicamentoService.converterDTOparaEntidade(medicamentoDTO);
         Medicamento medicamento = medicamentoService.atualizar(id, medicamentoAtualizado);
 
-        MedicamentoDTO resposta = new MedicamentoDTO(medicamento.getNome(), medicamento.getDosagem(), medicamento.getViaAdministracao());
+        MedicamentoDTO resposta = new MedicamentoDTO(medicamento.getId(), medicamento.getNome(), medicamento.getDosagem(), medicamento.getViaAdministracao());
         return ResponseEntity.ok(resposta);
 
     }
@@ -54,6 +54,7 @@ public class MedicamentoController {
         List<MedicamentoDTO> lista = medicamentoService.listarMedicamentos()
                 .stream()
                 .map(medicamento -> new MedicamentoDTO(
+                        medicamento.getId(),
                         medicamento.getNome(),
                         medicamento.getDosagem(),
                         medicamento.getViaAdministracao()
