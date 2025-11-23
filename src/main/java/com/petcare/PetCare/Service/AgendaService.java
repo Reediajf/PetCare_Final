@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 
 @Service
 public class AgendaService {
@@ -33,18 +35,18 @@ public class AgendaService {
         return agendaRepository.findAll();
     }
 
-    public Agenda atualizar(Long id, Agenda novaAgenda) {
-        Agenda existente = agendaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Agendamento n達o encontrado com ID: " + id));
-
-        // Atualiza os campos
-        existente.setDataInicio(novaAgenda.getDataInicio());
-        existente.setObservacao(novaAgenda.getObservacao());
-        existente.setTutor(novaAgenda.getTutor());
-        existente.setAnimal(novaAgenda.getAnimal());
-        existente.setMedicamento(novaAgenda.getMedicamento());
-
-        return agendaRepository.save(existente);
+    public Agenda atualizar(Long id, Agenda agendaAtualizada) {
+        Optional<Agenda> agendaExistente = agendaRepository.findById(id);
+        if (agendaExistente.isEmpty()) {
+            throw new EntityNotFoundException("Agendamento não encontrado com ID: " + id);
+        }
+        Agenda agenda = agendaExistente.get();
+        agenda.setTutor(agendaAtualizada.getTutor());
+        agenda.setAnimal(agendaAtualizada.getAnimal());
+        agenda.setMedicamento(agendaAtualizada.getMedicamento());
+        agenda.setDataInicio(agendaAtualizada.getDataInicio());
+        agenda.setObservacao(agendaAtualizada.getObservacao());
+        return agendaRepository.save(agenda);
     }
 
     public Agenda converterDTOParaEntidade(AgendaDTO dto) {

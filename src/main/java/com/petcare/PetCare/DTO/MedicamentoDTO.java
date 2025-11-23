@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MedicamentoDTO {
+    private long id;
     private String nome;
     private String dosagem;
     private String viaAdministracao;

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - PetSchedule</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="container">
+    <div class="login-container">
+        <div class="login-header">
+            <div class="paw-icon">🐾</div>
+            <h1>PetSchedule</h1>
+            <p>Sistema de Agendamentos</p>
+        </div>
+
+        <div class="form-container">
+            <!-- Form de Login -->
+            <form id="loginForm" class="form active">
+                <h2>Login</h2>
+                <div class="form-group">
+                    <label for="loginEmail">E-mail</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Senha</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn-primary">Entrar</button>
+                <div class="form-links">
+                    <a href="#" id="showRegister">Criar conta</a>
+                    <a href="#" id="showForgot">Esqueci minha senha</a>
+                </div>
+            </form>
+
+            <!-- Form de Registro -->
+            <form id="registerForm" class="form">
+                <h2>Criar Conta</h2>
+                <div class="form-group">
+                    <label for="registerName">Nome Completo</label>
+                    <input type="text" id="registerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">E-mail</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Senha</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerConfirmPassword">Confirmar Senha</label>
+                    <input type="password" id="registerConfirmPassword" required>
+                </div>
+                <button type="submit" class="btn-primary">Criar Conta</button>
+                <div class="form-links">
+                    <a href="#" id="showLogin">Já tenho uma conta</a>
+                </div>
+            </form>
+
+            <!-- Form de Recuperação de Senha -->
+            <form id="forgotForm" class="form">
+                <h2>Recuperar Senha</h2>
+                <div class="form-group">
+                    <label for="forgotEmail">E-mail</label>
+                    <input type="email" id="forgotEmail" required>
+                </div>
+                <button type="submit" class="btn-primary">Enviar Link de Recuperação</button>
+                <div class="form-links">
+                    <a href="#" id="showLoginFromForgot">Voltar ao Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="notificationContainer" class="notification-container"></div>
+
+<script src="js/auth.js"></script>
+<script src="js/notifications.js"></script>
+<script>
+    // Controle de navegação entre formulários
+    document.getElementById('showRegister').addEventListener('click', function(e) {
+        e.preventDefault();
+        showForm('registerForm');
+    });
+
+    document.getElementById('showForgot').addEventListener('click', function(e) {
+        e.preventDefault();
+        showForm('forgotForm');
+    });
+
+    document.getElementById('showLogin').addEventListener('click', function(e) {
+        e.preventDefault();
+        showForm('loginForm');
+    });
+
+    document.getElementById('showLoginFromForgot').addEventListener('click', function(e) {
+        e.preventDefault();
+        showForm('loginForm');
+    });
+
+    function showForm(formId) {
+        document.querySelectorAll('.form').forEach(form => {
+            form.classList.remove('active');
+        });
+        document.getElementById(formId).classList.add('active');
+    }
+
+    // Submissão dos formulários
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        login(email, password);
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('registerName').value;
+        const email = document.getElementById('registerEmail').value;
+        const password = document.getElementById('registerPassword').value;
+        const confirmPassword = document.getElementById('registerConfirmPassword').value;
+
+        if (password !== confirmPassword) {
+            showNotification('As senhas não coincidem!', 'error');
+            return;
+        }
+
+        registerUser(name, email, password);
+    });
+
+    document.getElementById('forgotForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('forgotEmail').value;
+        // Simulação de recuperação de senha
+        showNotification('Link de recuperação enviado para: ' + email, 'success');
+    });
+</script>
+</body>
+</html>

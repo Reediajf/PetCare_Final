@@ -11,7 +11,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class AnimalDTO {
-
+    private long id;
     private String nome;
     private String raca;
     private Float peso;
