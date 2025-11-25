@@ -66,31 +66,7 @@ async function loadAllData() {
     loadTutorSelect();
     loadPetsSelect();
     loadMedicamentoSelect();
-
-    loadPetsSidebar();
-
     renderCalendar();
-}
-
-// ===============================
-// Sidebar - Lista de Pets
-// ===============================
-function loadPetsSidebar() {
-    const list = document.getElementById("petsList");
-    list.innerHTML = "";
-
-    pets.forEach(p => {
-        const div = document.createElement("div");
-        div.className = "pet-item";
-        div.innerHTML = `
-            <div class="pet-avatar">${p.nome[0].toUpperCase()}</div>
-            <div>
-                <strong>${p.nome}</strong>
-                <div class="pet-breed">${p.raca}</div>
-            </div>
-        `;
-        list.appendChild(div);
-    });
 }
 
 // ===============================
@@ -140,11 +116,13 @@ function setupButtons() {
     });
 
     document.getElementById("newAppointment").addEventListener("click", () => openAppointmentModal());
+    document.getElementById("btnRelatorio").onclick = () => openModal("relatorioModal");
 
     // Fechar modais
     document.querySelectorAll(".close-btn, .cancel-btn").forEach(btn => {
         btn.addEventListener("click", closeAllModals);
     });
+    document.getElementById("closeRelatorioModal").onclick = () => closeAllModals();
 
     // Logout
     document.getElementById("logoutBtn").addEventListener("click", () => {
@@ -156,13 +134,14 @@ function setupButtons() {
     document.getElementById("btnCadastroTutor").onclick = () => openModal("tutorModal");
     document.getElementById("btnCadastroAnimal").onclick = () => openModal("animalModal");
     document.getElementById("btnCadastroMedicamento").onclick = () => openModal("medicamentoModal");
+    document.getElementById("btnBaixarPdf").onclick = baixarPdf;
+
 
     // Submits
     document.getElementById("appointmentForm").addEventListener("submit", saveAppointment);
     document.getElementById("tutorForm").addEventListener("submit", saveTutor);
     document.getElementById("animalForm").addEventListener("submit", saveAnimal);
     document.getElementById("medicamentoForm").addEventListener("submit", saveMedicamento);
-
     document.getElementById("deleteAppointment").addEventListener("click", deleteAppointment);
 }
 
@@ -363,12 +342,47 @@ async function saveMedicamento(e) {
         via: document.getElementById("medicamentoVia").value
     };
 
-    const saved = await api("/medicamentos", "POST", obj);
+    const saved = await api("/medicamento", "POST", obj);
     if (saved) {
         showNotification("Medicamento cadastrado!");
         closeAllModals();
         loadAllData();
     }
+}
+
+
+async function baixarPdf() {
+    try {
+        const response = await fetch("/agendamentos/pdf", { method: "GET" });
+
+        if (!response.ok) {
+            throw new Error("Erro ao gerar PDF");
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "agendamentos.pdf";
+        document.body.appendChild(a);
+        a.click();
+
+        a.remove();
+        window.URL.revokeObjectURL(url);
+
+        showNotification("PDF gerado com sucesso!");
+    } catch (e) {
+        showNotification(e.message, "error");
+    }
+    window.addEventListener("click", function(event) {
+        document.querySelectorAll(".modal.active").forEach(modal => {
+            if (event.target === modal) {
+                modal.classList.remove("active");
+            }
+        });
+    });
+
 }
 
 // ===============================

@@ -25,6 +25,11 @@ public class AnimalService {
     private TutorRepository tutorRepository;
 
 
+    @Transactional
+    public Animal buscarPorID(Long id) {
+        return animalRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Animal não encontrado"));
+    }
 
     @Transactional
     public Animal cadastrar(Animal animal) {

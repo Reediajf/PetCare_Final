@@ -3,9 +3,11 @@ package com.petcare.PetCare.Controller;
 import com.petcare.PetCare.DTO.AgendaDTO;
 import com.petcare.PetCare.Model.Agenda;
 import com.petcare.PetCare.Service.AgendaService;
+import com.petcare.PetCare.Util.AgendaPdfGenerator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,9 +16,11 @@ import java.util.stream.Collectors;
 public class AgendaController {
 
     private final AgendaService agendaService;
+    private final AgendaPdfGenerator agendaPdfGenerator;
 
-    public AgendaController(AgendaService agendaService) {
+    public AgendaController(AgendaService agendaService, AgendaPdfGenerator agendaPdfGenerator1) {
         this.agendaService = agendaService;
+        this.agendaPdfGenerator = agendaPdfGenerator1;
     }
 
 
@@ -68,4 +72,20 @@ public class AgendaController {
                 agenda.getObservacao()
         );
     }
+
+    @GetMapping("/pdf")
+    public ResponseEntity<byte[]> gerarPdf() {
+
+        List<AgendaDTO> lista = agendaService.listarAgendamentos()
+                .stream()
+                .map(this::toDTO)
+                .toList();
+
+        ByteArrayInputStream pdf = agendaPdfGenerator.gerarPdf(lista);
+
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=agendamentos.pdf")
+                .body(pdf.readAllBytes());
+    }
+
 }

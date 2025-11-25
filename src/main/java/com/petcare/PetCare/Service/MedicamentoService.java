@@ -59,4 +59,8 @@ public class MedicamentoService {
         return medicamento;
     }
 
+    public Medicamento buscarPorID(Long id) {
+        return medicamentoRepository.findById(id).
+                orElseThrow(() -> new RuntimeException("Medicamento não encontrado"));
+    }
 }

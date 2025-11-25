@@ -3,6 +3,7 @@ package com.petcare.PetCare.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.util.Date;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class AgendaDTO {
     private Long id;
     private Long tutorId;
@@ -18,4 +20,5 @@ public class AgendaDTO {
     private Long medicamentoId;
     private LocalDateTime dataInicio;
     private String observacao;
+
 }
