@@ -4,6 +4,7 @@ import com.petcare.PetCare.DTO.AgendaDTO;
 import com.petcare.PetCare.Model.Agenda;
 import com.petcare.PetCare.Service.AgendaService;
 import com.petcare.PetCare.Util.AgendaPdfGenerator;
+import com.petcare.PetCare.Util.HorarioOcupadoException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -87,5 +88,11 @@ public class AgendaController {
                 .header("Content-Disposition", "attachment; filename=agendamentos.pdf")
                 .body(pdf.readAllBytes());
     }
+
+    @ExceptionHandler(HorarioOcupadoException.class)
+    public ResponseEntity<String> handleHorarioOcupado(HorarioOcupadoException ex) {
+        return ResponseEntity.status(409).body(ex.getMessage());
+    }
+
 
 }

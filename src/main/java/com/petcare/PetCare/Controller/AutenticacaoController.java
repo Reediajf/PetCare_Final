@@ -21,8 +21,6 @@ public class AutenticacaoController {
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UsuarioDTO loginDTO) {
         Usuario usuario = usuarioService.buscarPorEmail(loginDTO.getEmail());
@@ -35,3 +33,5 @@ public class AutenticacaoController {
         return ResponseEntity.ok("Bearer " + token);
     }
 }
+
+
