@@ -1,6 +1,7 @@
 package com.petcare.PetCare.Service;
 
 import com.petcare.PetCare.DTO.AgendaDTO;
+import com.petcare.PetCare.DTO.AgendaResponseDTO;
 import com.petcare.PetCare.Util.HorarioOcupadoException;
 import com.petcare.PetCare.Model.*;
 import com.petcare.PetCare.Repository.*;
@@ -26,15 +27,19 @@ public class AgendaService {
     @Autowired
     private MedicamentoRepository medicamentoRepository;
 
-    public Agenda criarAgendamento(AgendaDTO dto) {
+    @Autowired
+    NotificationService notificationService;
 
+    public Agenda criarAgendamento(AgendaDTO dto) {
 
         boolean horarioOcupado = agendaRepository.existsByDataInicio(dto.getDataInicio());
         if (horarioOcupado) {
             throw new HorarioOcupadoException("Já existe um agendamento para esse horário.");
         }
-
         Agenda agenda = converterDTOParaEntidade(dto);
+
+        notificationService.enviarEmailAgendamento(agenda);
+
         return agendaRepository.save(agenda);
     }
 
@@ -99,9 +104,27 @@ public class AgendaService {
         return agenda;
     }
 
+    public AgendaResponseDTO toResponseDTO(Agenda agenda) {
+        AgendaResponseDTO dto = new AgendaResponseDTO();
+
+        dto.setId(agenda.getId());
+        dto.setTutorNome(agenda.getTutor().getNome());
+        dto.setAnimalNome(agenda.getAnimal().getNome());
+        dto.setMedicamentoNome(agenda.getMedicamento().getNome());
+        dto.setObservacao(agenda.getObservacao());
+        dto.setDataInicio(agenda.getDataInicio());
+
+        return dto;
+    }
+
+
     @Transactional
     public void excluir(Long id) {
         agendaRepository.deleteById(id);
     }
 
+    public Agenda buscarPorId(Long id) {
+        agendaRepository.findById(id).orElseThrow();
+        return agendaRepository.findById(id).get();
+    }
 }

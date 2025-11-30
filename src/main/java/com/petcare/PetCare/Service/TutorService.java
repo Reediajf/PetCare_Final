@@ -3,6 +3,7 @@ package com.petcare.PetCare.Service;
 import com.petcare.PetCare.DTO.TutorDTO;
 import com.petcare.PetCare.Model.Tutor;
 import com.petcare.PetCare.Repository.TutorRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +50,11 @@ public class TutorService {
     public Tutor buscarPorId(Long id) {
         return tutorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Tutor não encontrado"));
+    }
+
+    public String buscarEmail(Long id) {
+        return tutorRepository.findEmailById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Tutor não encontrado"));
     }
 
     public Tutor converterDtoParaEntidade(TutorDTO dto) {

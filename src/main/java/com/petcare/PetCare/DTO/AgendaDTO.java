@@ -21,4 +21,15 @@ public class AgendaDTO {
     private LocalDateTime dataInicio;
     private String observacao;
 
+    @Override
+    public String toString() {
+        return "AgendaDTO{" +
+                ", tutorId=" + tutorId +
+                ", animalId=" + animalId +
+                ", medicamentoId=" + medicamentoId +
+                ", dataInicio=" + dataInicio +
+                ", observacao='" + observacao + '\'' +
+                '}';
+    }
+
 }

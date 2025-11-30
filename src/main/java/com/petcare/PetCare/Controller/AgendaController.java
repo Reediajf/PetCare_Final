@@ -19,6 +19,7 @@ public class AgendaController {
     private final AgendaService agendaService;
     private final AgendaPdfGenerator agendaPdfGenerator;
 
+
     public AgendaController(AgendaService agendaService, AgendaPdfGenerator agendaPdfGenerator1) {
         this.agendaService = agendaService;
         this.agendaPdfGenerator = agendaPdfGenerator1;
@@ -30,6 +31,7 @@ public class AgendaController {
         Agenda agenda = agendaService.criarAgendamento(dto);
 
         return ResponseEntity.ok(toDTO(agenda));
+
     }
 
 
