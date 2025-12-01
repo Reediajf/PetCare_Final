@@ -20,7 +20,7 @@ public class EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
             helper.setTo(to);
             helper.setSubject(subject);
-            helper.setText(htmlContent, true); // TRUE = HTML habilitado
+            helper.setText(htmlContent, true);
             helper.setFrom("jaideerf@gmail.com");
 
             mailSender.send(mimeMessage);

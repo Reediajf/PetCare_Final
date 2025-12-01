@@ -118,26 +118,21 @@ function setupButtons() {
     document.getElementById("newAppointment").addEventListener("click", () => openAppointmentModal());
     document.getElementById("btnRelatorio").onclick = () => openModal("relatorioModal");
 
-    // Fechar modais
     document.querySelectorAll(".close-btn, .cancel-btn").forEach(btn => {
         btn.addEventListener("click", closeAllModals);
     });
     document.getElementById("closeRelatorioModal").onclick = () => closeAllModals();
 
-    // Logout
     document.getElementById("logoutBtn").addEventListener("click", () => {
         localStorage.removeItem("token");
         window.location.href = "index.html";
     });
 
-    // Botões de cadastro
     document.getElementById("btnCadastroTutor").onclick = () => openModal("tutorModal");
     document.getElementById("btnCadastroAnimal").onclick = () => openModal("animalModal");
     document.getElementById("btnCadastroMedicamento").onclick = () => openModal("medicamentoModal");
     document.getElementById("btnBaixarPdf").onclick = baixarPdf;
 
-
-    // Submits
     document.getElementById("appointmentForm").addEventListener("submit", saveAppointment);
     document.getElementById("tutorForm").addEventListener("submit", saveTutor);
     document.getElementById("animalForm").addEventListener("submit", saveAnimal);
@@ -180,7 +175,7 @@ function renderCalendar() {
 
         div.innerHTML = `<div class="calendar-day-number">${d}</div>`;
 
-        // Renderizar eventos
+        // Exibir eventos
         appointments
             .filter(a => {
                 if (!a || !a.dataInicio) return false;
@@ -196,13 +191,24 @@ function renderCalendar() {
 
                 const hora = a.dataInicio.split("T")[1].slice(0, 5);
                 const pet = pets.find(p => p.id === a.animalId);
+                const medicamento = medicamentos.find(m => m.id === a.medicamentoId);
 
-                event.innerHTML = `${pet?.nome ?? "Pet"} <small>${hora}</small>`;
+                // MOSTRAR PET + MEDICAMENTO
+                event.innerHTML = `
+                    <strong>${pet?.nome ?? "Pet"}</strong>
+                    <small>${medicamento?.nome ?? ""}</small>
+                    <small>${hora}</small>
+                `;
+
                 event.onclick = () => openAppointmentModal(a.id);
                 div.appendChild(event);
             });
 
-        div.addEventListener("click", () => openAppointmentModal(null, date));
+        // Impedir conflito de clique entre evento e dia
+        div.addEventListener("click", (e) => {
+            if (e.target.classList.contains("calendar-event")) return;
+            openAppointmentModal(null, date);
+        });
 
         grid.appendChild(div);
     }
@@ -236,7 +242,10 @@ function openAppointmentModal(id = null, date = null) {
         document.getElementById("tutorSelect").value = a.tutorId;
         document.getElementById("petSelect").value = a.animalId;
         document.getElementById("medicamentoSelect").value = a.medicamentoId;
-        document.getElementById("appointmentDate").value = a.dataInicio;
+
+        // Ajuste seguro para datetime-local
+        document.getElementById("appointmentDate").value = a.dataInicio.slice(0, 16);
+
         document.getElementById("appointmentNotes").value = a.observacao || "";
 
         deleteBtn.style.display = "inline-block";
@@ -288,13 +297,17 @@ async function deleteAppointment() {
     const id = document.getElementById("appointmentId").value;
     if (!id) return;
 
-    const ok = await api(`/agendamentos/${id}`, "DELETE");
+    const res = await fetch(`/agendamentos/${id}`, { method: "DELETE" });
 
-    if (ok) {
+    if (res.ok) {
         showNotification("Agendamento excluído!", "success");
         closeAllModals();
-        loadAllData();
+        await loadAllData();  // recarrega tudo
+        renderCalendar();     // força re-render
+    } else {
+        showNotification("Erro ao excluir agendamento", "error");
     }
+
 }
 
 // ===============================
@@ -350,14 +363,11 @@ async function saveMedicamento(e) {
     }
 }
 
-
 async function baixarPdf() {
     try {
         const response = await fetch("/agendamentos/pdf", { method: "GET" });
 
-        if (!response.ok) {
-            throw new Error("Erro ao gerar PDF");
-        }
+        if (!response.ok) throw new Error("Erro ao gerar PDF");
 
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
@@ -375,6 +385,7 @@ async function baixarPdf() {
     } catch (e) {
         showNotification(e.message, "error");
     }
+
     window.addEventListener("click", function(event) {
         document.querySelectorAll(".modal.active").forEach(modal => {
             if (event.target === modal) {

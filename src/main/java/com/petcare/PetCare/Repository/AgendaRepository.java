@@ -9,4 +9,5 @@ import java.time.LocalDateTime;
 @Repository
 public interface AgendaRepository extends JpaRepository<Agenda, Long> {
     boolean existsByDataInicio(LocalDateTime dataInicio);
+
 }

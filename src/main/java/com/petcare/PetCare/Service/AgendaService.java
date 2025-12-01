@@ -120,8 +120,17 @@ public class AgendaService {
 
     @Transactional
     public void excluir(Long id) {
-        agendaRepository.deleteById(id);
+
+        Agenda agenda = agendaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Agendamento não encontrado"));
+        agenda.setAnimal(null);
+        agenda.setTutor(null);
+        agenda.setMedicamento(null);
+        agendaRepository.save(agenda);
+        agendaRepository.delete(agenda);
     }
+
+
 
     public Agenda buscarPorId(Long id) {
         agendaRepository.findById(id).orElseThrow();
